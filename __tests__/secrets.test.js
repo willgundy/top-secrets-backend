@@ -23,19 +23,18 @@ const registerAndLogin = async (userProps = {}) => {
   return [agent, user];
 };
 
-describe('user routes', () => {
+describe('secret routes', () => {
   beforeEach(() => {
     return setup(pool);
   });
 
   it('should get secrets list if user is authorized', async () => {
-    const [agent, user] = await registerAndLogin();
+    const [agent] = await registerAndLogin();
     const loggedInUser = await agent.get('/api/v1/users/me');
 
-    const resp = await request(app).get('/api/v1/secrets');
+    const resp = await agent.get('/api/v1/secrets');
     expect(resp.status).toBe(200);
     expect(resp.body.length).toEqual(2);
-    });
   });
 
   afterAll(() => {

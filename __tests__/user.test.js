@@ -64,8 +64,6 @@ describe('user routes', () => {
     const [agent, user] = await registerAndLogin();
     const loggedInUser = await agent.get('/api/v1/users/me');
 
-    console.log(loggedInUser.body);
-
     expect(loggedInUser.body).toEqual({
       ...user,
       exp: expect.any(Number),
@@ -73,8 +71,6 @@ describe('user routes', () => {
     });
 
     const loggedOut = await agent.delete('/api/v1/users/sessions');
-    
-    console.log(loggedOut.body);
 
     expect(loggedOut.body).toEqual({
       message: 'Signed out successfully!',
