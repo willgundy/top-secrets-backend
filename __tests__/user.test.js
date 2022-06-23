@@ -10,6 +10,18 @@ const userData = {
   password: '12345',
 };
 
+const registerAndLogin = async (userProps = {}) => {
+  const password = userProps.password ?? userData.password;
+
+  const agent = request.agent(app);
+
+  const user = await UserService.create({ ...userData, ...userProps });
+
+  const { email } = user;
+  await agent.post('/api/v1/users/sessions').send({ email, password });
+  return [agent, user];
+};
+
 describe('user routes', () => {
   beforeEach(() => {
     return setup(pool);
@@ -24,6 +36,17 @@ describe('user routes', () => {
       firstName,
       lastName,
       email,
+    });
+  });
+
+  it('should get the current user when logged in', async () => {
+    const [agent, user] = await registerAndLogin();
+    const loggedInUser = await agent.get('/api/v1/users/me');
+
+    expect(loggedInUser.body).toEqual({
+      ...user,
+      exp: expect.any(Number),
+      iat: expect.any(Number),
     });
   });
   afterAll(() => {
