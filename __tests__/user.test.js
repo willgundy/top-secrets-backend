@@ -53,6 +53,16 @@ describe('user routes', () => {
       iat: expect.any(Number),
     });
   });
+
+  it('return error if user is not logged in', async () => {
+    const res = await request(app).get('/users');
+
+    expect(res.body).toEqual({
+      message: 'You must be signed in to continue',
+      status: 401,
+    });
+  });
+
   afterAll(() => {
     pool.end();
   });
