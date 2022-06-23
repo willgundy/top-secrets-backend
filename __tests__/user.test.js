@@ -42,10 +42,7 @@ describe('user routes', () => {
 
   it('should get the current user when logged in', async () => {
     const [agent, user] = await registerAndLogin();
-    console.log(agent);
     const loggedInUser = await agent.get('/api/v1/users/me');
-
-    console.log(loggedInUser.body);
 
     expect(loggedInUser.body).toEqual({
       ...user,
@@ -60,6 +57,28 @@ describe('user routes', () => {
     expect(res.body).toEqual({
       message: 'You must be signed in to continue',
       status: 401,
+    });
+  });
+
+  it('return error if user is not logged in', async () => {
+    const [agent, user] = await registerAndLogin();
+    const loggedInUser = await agent.get('/api/v1/users/me');
+
+    console.log(loggedInUser.body);
+
+    expect(loggedInUser.body).toEqual({
+      ...user,
+      exp: expect.any(Number),
+      iat: expect.any(Number),
+    });
+
+    const loggedOut = await agent.delete('/api/v1/users/sessions');
+    
+    console.log(loggedOut.body);
+
+    expect(loggedOut.body).toEqual({
+      message: 'Signed out successfully!',
+      success: true
     });
   });
 
