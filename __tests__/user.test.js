@@ -19,7 +19,7 @@ const registerAndLogin = async (userProps = {}) => {
   const user = await UserService.create({ ...userData, ...userProps });
 
   const { email } = user;
-  await agent.post('/api/v1/users/sessions').send({ email, password });
+  await agent.post('/users/sessions').send({ email, password });
   return [agent, user];
 };
 
@@ -42,7 +42,10 @@ describe('user routes', () => {
 
   it('should get the current user when logged in', async () => {
     const [agent, user] = await registerAndLogin();
-    const loggedInUser = await agent.get('/api/v1/users/me');
+    console.log(agent);
+    const loggedInUser = await agent.get('/users/me');
+
+    console.log(loggedInUser.body);
 
     expect(loggedInUser.body).toEqual({
       ...user,
