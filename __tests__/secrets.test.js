@@ -37,6 +37,12 @@ describe('secret routes', () => {
     expect(resp.body.length).toEqual(2);
   });
 
+  it('should not allow unauthorized users to get secrets', async () => {
+    const resp = await request(app).get('/api/v1/secrets');
+    expect(resp.status).toBe(401);
+    expect(resp.body).toEqual({ status: 401, message: 'You must be signed in to continue' });
+  });
+
   afterAll(() => {
     pool.end();
   });
