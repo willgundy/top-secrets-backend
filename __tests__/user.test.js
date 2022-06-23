@@ -19,7 +19,7 @@ const registerAndLogin = async (userProps = {}) => {
   const user = await UserService.create({ ...userData, ...userProps });
 
   const { email } = user;
-  await agent.post('/users/sessions').send({ email, password });
+  await agent.post('/api/v1/users/sessions').send({ email, password });
   return [agent, user];
 };
 
@@ -28,7 +28,7 @@ describe('user routes', () => {
     return setup(pool);
   });
   it('creates a new user', async () => {
-    const res = await request(app).post('/users').send(userData);
+    const res = await request(app).post('/api/v1/users').send(userData);
     expect(res.status).toBe(200);
     const { firstName, lastName, email } = userData;
 
@@ -43,7 +43,7 @@ describe('user routes', () => {
   it('should get the current user when logged in', async () => {
     const [agent, user] = await registerAndLogin();
     console.log(agent);
-    const loggedInUser = await agent.get('/users/me');
+    const loggedInUser = await agent.get('/api/v1/users/me');
 
     console.log(loggedInUser.body);
 
@@ -55,7 +55,7 @@ describe('user routes', () => {
   });
 
   it('return error if user is not logged in', async () => {
-    const res = await request(app).get('/users');
+    const res = await request(app).get('/api/v1/users/me');
 
     expect(res.body).toEqual({
       message: 'You must be signed in to continue',
