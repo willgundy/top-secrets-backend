@@ -60,7 +60,7 @@ describe('user routes', () => {
     });
   });
 
-  it('return error if user is not logged in', async () => {
+  it('return successful logout after calling session delete', async () => {
     const [agent, user] = await registerAndLogin();
     const loggedInUser = await agent.get('/api/v1/users/me');
 
